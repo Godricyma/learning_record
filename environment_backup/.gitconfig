@@ -1,0 +1,12 @@
+[alias]  
+    st = status  
+    ci = commit  
+    br = branch  
+[color]  
+    ui = true 
+[core]  
+    filemode = false
+[diff]  
+    tool = vimdiff  
+[difftool]  
+    prompt = false 
