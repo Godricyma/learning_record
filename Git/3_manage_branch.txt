@@ -30,3 +30,21 @@ git fetch --all 所有本地分支从跟踪的远程分支上抓取数据
 git pull 从当前分支跟踪的远程分支上抓取数据，并尝试合并，相当于：
 	git fetch + git merge
 git push <remote> --delete <branch> 删除远程分支，通常只是移除指针，数据保留到垃圾回收运行
+变基：相对于直接合并（git merge），最终结果一致，但是提交历史更简洁
+	git rebase <base_branch> <topic_branch> 相当于：git checkout <base_branch>;git rebase <topic_branch>
+	git checkout <topic_branch>
+	git merge <base_branch>
+git rebase --onto master server client 取出client分支，找出从server分支分歧以后的提交，然后把这些提交在master分支上重放一遍，让client看起来像是直接基于 master修改一样
+
+变基 vs. 合并:
+只对尚未推送或分享给别人的本地修改执行变基操作清理历史， 从不对已推送至别处的提交执行变基操作，这样，你才能享受到两种方式带来的便利。
+
+
+
+
+
+
+
+
+
+
