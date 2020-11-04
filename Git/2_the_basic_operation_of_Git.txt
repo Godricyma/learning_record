@@ -1,0 +1,71 @@
+git init 对已存在的目录进行git初始化
+git clone ssh:xxx/xxx
+git clone user@xxx:xxx/xxx
+git clone https://xxx/xxx
+git status 查看文件当前状态（参数 -s或--short可以使输出更精简）
+git add 将已修改的已跟踪文件或者未跟踪文件加入暂存区（参数是文件名或者路径名）
+git diff 显示尚未暂存的修改内容，工作区与暂存区相对比
+git diff --staged/--cached 显示已暂存的修改内容，暂存区与版本库想对比
+git commit 将暂存区内容提交到版本库
+	-v 选项将git diff 的输出以注释形式呈现在提交说明的文本中
+	-m 选项直接在命令行添加提交说明
+	-a 自动把所有已经跟踪过的文件暂存起来一并提交，从而跳过add步骤
+	--amend 重新提交，将暂存区的内容提交并修改上次的提交说明
+git config --global core.editor 设置用来提交说明的文本编辑器vim或者emacs
+git rm 在暂存区中删除已跟踪文件，并在工作删除该文件
+	-f 用于删除之前修改过或已经放到暂存区的文件
+	--cached 在暂存区中删除已跟踪文件，但在工作区中保留
+git mv a b 重命名，相当于：
+	mv a b
+	git rm a
+	git add b
+git log 查看提交历史
+	-p/--patch 显示每次提交所引入的差异（git diff）
+	-<n> 显示n条提交历史
+	--stat 显示每次提交的文件修改总结（git status）
+	--pretty 显示不同于默认格式的方式展示提交历史
+		=oneline
+		=short
+		=full
+		=fuller 
+		=format:"%h - %an, %ar : %s"定制显示格式
+			%H/%h 提交的完整哈希值/简写哈希值
+			%T/%t 树的完整哈希值/简写哈希值
+			%an 作者
+			%ar 作者修订日期，按多久以前的方式显示
+			%s 提交说明
+	--graph 形象展示分支发展历程，一般配合--pretty=format使用
+	--since/--until/--before 时间过滤器
+	--grep 关键词搜索过滤器
+	-S function_name 显示添加过或删除了function_name的提交
+	-- 限定路径
+git reset HEAD <file> 取消暂存，暂存区的文件恢复到和版本库保持一致
+git checkout -- <file> 撤销修改，文件恢复到和暂存区保持一致
+git remote add <shortname> <url> 添加远程仓库
+git fetch <remote> 抓取，将数据下载到本地仓库，但是不会自动合并或修改当前工作区，也不会在远程分支的基础上创建本地分支
+git pull 拉取，自动抓取后合并远程分支到当前分支
+git push <remote> <branch> 推送
+git remote show origin 显示远程仓库的信息
+git remote rename 修改远程仓库的简写名，相关跟踪的分支同步修改
+git remote remove 移除远程仓库，相关的跟踪分支和配置信息也一起删除
+git tag -a <tag_name> -m <commit_descriprion> 创建附注标签
+git tag -a <tag_name> -m <commit_descriprion> <commit_id> 根据历史提交记录创建tag
+git tag <tag_name> 创建轻量标签
+git show <tag_name> 查看标签信息
+git push <remote> <tag_name> 推送标签到远程服务器
+git push <remote> --tags 推送所有标签
+git tag -d <tag_name> 删除本地标签
+git push <remote> :refs/tags/<tag_name> 更新远程仓库的tag标签，冒号前的空值推送到远程标签名
+git push <remote> --delete <tag_name> 删除远程仓库的tag标签
+
+检出标签？
+
+
+
+
+
+
+
+
+
+
