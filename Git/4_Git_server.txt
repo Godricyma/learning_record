@@ -1,0 +1,31 @@
+服务器上的仓库通常是一个裸仓库，只包含.git子目录下的内容
+
+Git服务器的四种协议：本地协议、HTTP协议、SSH协议、Git协议
+    本地协议：共享文件系统
+              git clone /srv/git/project.git（Git会尝试使用硬链接或者直接复制所需要的文件）
+              git clone file:///srv/git/project.git （Git会触发用于网路传输资料的进程，传输效率更低，但是可以获得一个没有外部参考或对象的干净版本库副本） （缺点：共享文件系统难配置，多地办公不方便、访问速度也不快、且不利于权限管理）
+    HTTP协议：智能HTTP协议、哑HTTP协议
+    SSH协议：架设相对简单、使用普遍、访问安全、传输高效，但不支持匿名访问
+            git clone ssh://[user@]server/project.git （如果不指定用户名，则默认使用当前登录的名字）
+            git clone [user@]server:project.git
+    Git协议：传输速度最快，不需要进行用户授权，但是Git协议最难架设，需要开放9418端口，通常企业不会开放或者要求封锁
+    
+搭建Git服务器
+
+简单的Git服务器，可供几个人使用
+1、在现有仓库上导出裸仓库。git clone --bare my_project my_project.git 相当于：cp -rf my_project/.git my_project.git
+2、通过scp命令将裸仓库放到服务器某个目录下，如：/srv/git/my_project.git。
+    如果一个用户ssh登录到该服务器并拥有/srv/git/my_project.git的可写权限，那么他将自动获得推送权限
+    git init --bare --shared 修改该仓库目录的组权限为可写
+
+小型安装，实现了用户管理
+建立SSH连接：只要每个用户可以获得主机的shell访问权限，任何SSH授权机制都是有效的
+    为每个人创建账户
+    建立公用的git账户，将需要写权限的人发送一个ssh公钥，加入服务器git账户的~/.ssh/authorized_keys文件中
+    通过LDAP服务，或者其他已经设定好的集中授权机制
+
+配置Git服务器
+1、将用户的ssh公钥加入~/.ssh/authorized_keys文件中
+2、将git-shell设置为用户git的登录shell，cat /etc/shells;which git-shell;sudo -e /etc/shells
+3、自定义git-shell
+
