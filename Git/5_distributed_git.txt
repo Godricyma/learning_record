@@ -1,0 +1,60 @@
+常见Git工作流：
+    集中式工作流（2层：shared repository、developer）
+    集成管理者工作流（3层：blessed repository、integration manager、developer，三步：developer private -> developer public -> integration manager -> blessed repository）
+    主管与副主管工作流（4层：blessed repository、lieutenant、dictator、developer，四步：developer private -> developer public -> lieutenant -> dictator -> blessed repository）
+
+常见项目贡献方式：
+    私有小型团队：贡献者在推代码之前抓取远程分支的更新内容，并合并到本地分支，然后再推代码
+    私有管理团队：贡献者把更新得代码推到远程仓库的其他分支上，维护者将远程仓库中的其他分支代码合并到master分支
+    通过邮件的公开项目：将提交转换成电子邮件，发送给项目维护者
+
+维护项目：
+git diff生成的补丁：
+    git apply patch_name.patch 应用patch
+    git apply --check patch_name.patch 检查patch是否可以顺利应用
+git format-patch -M <remote>/<branch> 生成补丁
+    git am patch_name.patch 应用patch
+        -3 : 使Git尝试进行三方合并，要求补丁使基于公共提交的
+        -i : 交互模式下，通常用于应用多个补丁的mbox文件
+抓取分支并合并：
+    git remote add <remote> <remote_url>
+    git fetch <remote>
+    git checkout -b <local_branch> <remote>/<remote_branch>
+一次性抓取：适用于非持续性的合作
+    git pull <remote_url>
+查看相对于master分支的引用：
+    git log <branch> --not master
+        -p : 在提交后面显示差异（git diff）
+
+整合提交：
+合并工作流：依次合并主题分支到master分支，项目更大时，将主题分支先合并到develop分支，当打标签发布的时候，将master分支快进到已经稳定的develop分支。
+大项目合并工作流：包含四个长期分支：master、next、用于新工作的pu分支和用于维护性向后移植工作的maint分支
+变基和拣选工作流：为了保持线性的提交历史
+rerere（reuse recorded resolution）：简化冲突解决的方法，将已解决的冲突进行缓存，之后遇到类似的场景直接应用
+
+打标签：
+签名问题：
+    gpg --list-keys 列出所有key
+    gpg -a --export <key> | git hash-object -w --stdin 导出key并将key导入到Git的数据库中
+    git tag -a <tag_name> <key_hash_value> 创建tag直接指向这个key
+    git push --tags 将tag推到远程库上
+    git show <tag_name> | gpg --import 从Git数据库中拉取key的blob对象并将key导入到GPG中
+
+生成一个构建号：
+    git describe <branch> 需要带注解的标签，轻量标签在命令后加--tags选项，由于是简短的SHA-1值，不一定有效
+    v1.6.2-rc1-20-g8c5b85c
+
+准备一次发布：
+    git archive <branch> --prefix='project/' | gzip > $(git describe <branch>).tar.gz 建立最新的快照归档
+    git archive <branch> --prefix='project/' --format=zip > $(git describe <branch>).tar.gz zip格式的包
+
+制作提交简报：
+    git shortlog --no-merges <branch> --not <tag> 生成一份自<tag>以来所有的提交
+
+
+
+
+
+
+
+
