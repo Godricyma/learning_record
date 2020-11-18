@@ -1,0 +1,19 @@
+以拉取为中心的特殊合作流程：
+    1、Fork一个项目
+    2、从master分支创建新分支
+    3、提交修改
+    4、推送分支到GitHub的派生项目
+    5、创建一个拉取请求
+    6、讨论，根据实际情况继续修改
+    7、项目的拥有者合并或关闭拉取请求
+    8、将更新后的master分支同步到派生项目中
+
+设置默认fetch和push远程分支:
+git remote add <remote> <remote_url>
+git branch --set-upstream-to=<remote>/<branch> <local_branch>
+git config --local remote.pushDefault <remote>
+
+hook是什么？作用是什么？
+
+
+
