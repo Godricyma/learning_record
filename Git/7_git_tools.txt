@@ -1,0 +1,135 @@
+指定修订版本：
+git log --abbrev-commit --pretty=oneline 输出结果显示剪短且唯一的SHA-1指
+当topic1分支指向提交ca82a6d...时，commit引用和分支引用等价，例如：
+    git show ca82a6dff817ec66f44342007202690a93763949
+    git show topic1
+
+引用日志，即HEAD和分支引用所指向的历史，只存在于本地仓库
+git reflog 查看引用日志，HEAD和分支引用所指向的历史
+git show HEAD@[5] 输出最近5条reflog的历史记录
+git log -g master 查看类似于git log 输出格式的引用日志信息
+
+祖先提交
+父提交：在引用的尾部加上一个脱字符”^“或者“~”
+git show HEAD^ 显示HEAD的父提交，等价于
+git show HEAD~
+区别在于：
+    ^2代表第二父提交，只适用于合并提交
+    ~2代表第一父提交的第一父提交，也就是祖父提交
+两者可以同时使用
+
+提交区间：
+双点：选出在一个引用中而不再另一个引用中的提交，也就是第二个引用减去两个引用的交集
+git log <branchA>..<branchB> 在branchB中而不在branchA中的提交
+git log <remote>/<branch>..HEAD 显示当前分支中即将push到远程分支的本地提交
+git log <remote>/<branch>.. 效果同上，Git默认用HEAD代替留空的一边
+等价：
+git log refA..refB
+git log ^refA refB
+git log refB --not refA
+
+git log refA refB ^refC
+git log refA refB --not refC
+三点：两个引用包含的引用并集减去交集
+git log --left-right refA...refB 显示两个引用的非公共引用，并通过尖括号区分属于哪边的引用
+
+交互式暂存：
+暂时不需要使用这个功能
+
+贮藏与清理：
+git stash (push) 贮藏修改，工作区和暂存区对于已跟踪的文件修改将被贮藏推送到栈上
+git stash list 查看贮藏的东西
+git stash apply 应用最近的一次贮藏工作内容，文件被修改，但是暂存区内容不会被恢复
+git stash apply stash@{2} 应用stash@{2}贮藏内容
+git stash apply --index 重新恢复修改的文件，并恢复暂存区内容
+git stash drop stash@{0} 移除stash@{0}贮藏，相当于：
+git stash pop
+git stash -u/--include-untracked 贮藏未跟踪的文件
+git stash -a/--all 贮藏所有文件，包括忽略的文件
+git stash --patch 不贮藏任何修改过的东西，但交互式的提示那些需要保存在工作目录中
+git stash branch <branch> 从贮藏创建一个分支，应用成功后移除该贮藏
+
+git clean -f -d --dry-run/-n 演习强制移除未被跟踪的文件和空目录，并显示将要移除什么
+git stash --all/-a 将所有文件贮藏，达到清理工作空间的目的
+git clean -x 被忽略的文件也将被清理
+git clean -ff 清理仓库下的子仓库
+
+签名：
+配置签名：
+gpg --gen-key 生成个人秘钥
+gpg --list-keys 列出秘钥
+git config --global user.signingkey 0A46826A
+应用签名：
+git tag -s v1.5 -m "my signed 1.5 tag" 给标签签名
+git tag -v v1.4.2.1 验证标签
+git commit -a -S -m "signed commit" 给提交签名
+git log --show-signature -1 查看及验证提交的签名
+git log --pretty=format:"%h %G? %aN  %s" 以%G?格式列在输出中
+git merge/pull --verify-signatures -S <branch> 检查并拒绝没有携带可信GPG签名的提交，并为merge命令生成的合并提交签名
+
+搜索：
+git grep -n/--line-number <str> 显示匹配行的行号
+         --count 显示每个文件的匹配数
+         -p/--show-function 显示每一个匹配的字符串所在的方法或函数
+
+git log -S <str> --oneline 查看引入和删除该字符串的提交
+        -G <match> 使用正则表达式搜索
+        -L :<function_name>:<file> 显示该函数从创建后所有变更对应的补丁
+怎么使用正则表达式搜索？
+
+重写历史：
+必须保证本地分支没有推送到远程分支，因为所有这些操作都将生成新的SHA-1校验和
+git commit --amend --no-edit 对最后一次提交进行追加提交，不需要重新进行提交说明，但是会生成新的SHA-1校验和
+git rebase -i HEAD~3 交互式变基，显示的提交历史从旧到新
+    修改提交信息：将提交前面的pick改为edit，保存并退出后，一次对每个edit提交进行重新编辑
+    重新排序提交：直接删除一行的提交，保存并退出后，将移除那一次的提交
+    压缩提交：修改pick为squash，会将那一次提交合并到他的上一次非合并提交
+    拆分提交：修改pick为edit，然后git rebase HEAD^，接着重新提交多次，即可实现拆分提交
+git filter-branch  git-filter-repo更推荐
+git filter-branch --tree-filter 'rm -rf passwords.txt' HEAD 从每个提交中删除这个密码文件
+git filter-branch --subdirectory-filter trunk HEAD 使trunk目录作为新的根目录
+git filter-branch --commit-filter '<commands>' HEAD 全局修改提交信息
+
+重置：
+Git的三棵树：HEAD、Index、Working Directory
+
+HEAD：当前分支引用的指针
+git cat-file -p HEAD 查看某个引用的具体信息
+git ls-tree -r HEAD
+
+Index：索引是预期的下一次提交，是扁平的清单实现的，但是我们可以把它理解为树
+git ls-files 显示出索引（暂存区）当前的样子
+
+Working Directory：另外两棵树以一种高效但并不直观的方式，将它们的内容存储在.git文件夹中， 工作目录将它们解包为实际的文件以便编辑
+
+当检出一个分支时，首先会修改HEAD指向新的分支引用，然后将索引填充为该次提交的快照，最后将索引的内容复制到工作目录中
+
+reset工作流程：
+1、移动HEAD指向的分支的指向，与checkout做的改变HEAD指向的分支不同
+2、更新索引，reset会用HEAD指向的当前快照来更新索引
+3、更新工作目录，将索引内容复制到工作目录中
+
+git reset --soft HEAD~ 移动HEAD，但是不会改变索引和工作区，相当于撤销了一次commit操作，到第一步停止
+git reset --mixed HEAD~ 移动HEAD并改变索引，相当于撤销了add和commit命令，到第二步停止
+git reset --hard HEAD~ 撤销了add、commit命令和工作目录所有的工作
+
+通过路径来重置
+git reset <file> 跳过移动HEAD分支的指向，停在第二步，根据HEAD指向的快照还原该目录或文件，相当于
+git reset --mixed HEAD <file>
+git reset <commit_id> -- <file> 指定路径根据某一个提交的快照内容对索引进行重置
+
+压缩提交：
+git reset --soft HEAD~2 移动HEAD指向上两个提交，工作区和暂存区内容不改变
+git commit 提交，将三次提交压缩为一次提交
+
+reset和checkout的区别：
+reset移动HEAD所指分支指向的引用，而checkout移动HEAD本身
+
+
+
+
+
+
+
+
+
