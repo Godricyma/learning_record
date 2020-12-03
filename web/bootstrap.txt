@@ -1,0 +1,16 @@
+1、csrf问题：
+Forbidden (403)
+CSRF verification failed. Request aborted.
+
+Help
+Reason given for failure:
+
+    CSRF token missing or incorrect.
+
+解决方法：
+在表单中添加{% csrf_token %}
+<form class="form-signin" action="/login/upload/" method="post">
+  {% csrf_token %}
+
+
+2、

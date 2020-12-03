@@ -125,10 +125,20 @@ git commit 提交，将三次提交压缩为一次提交
 reset和checkout的区别：
 reset移动HEAD所指分支指向的引用，而checkout移动HEAD本身
 
+高级合并：
+git merge -Xignore-space-change <branch> 忽略空白
 
+git ls-files -u 列出冲突文件的所有副本的索引
+git show :1:<file> > common_<file>
+git show :2:<file> > our_<file>
+git show :3:<file> > their_<file>
 
+git checkout --ours/--theirs <file> 检出冲突文件，直接保留一方而丢弃另一方
+git log --cc -p -1
 
-
+git revert -m 1 HEAD 还原提交
+git merge -Xours/-Xtheirs 在冲突时，直接选择ours或者theirs，而不是标记冲突文件
+git merge-file --ours/--theirs
 
 
 
