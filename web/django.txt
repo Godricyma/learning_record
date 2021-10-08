@@ -1,0 +1,26 @@
+1、在django项目中，将多个APP放在同一个目录下，需要在setting中加入一句：
+sys.path.insert(0, os.path.join(BASE_DIR,'apps'))
+
+2、时区设置
+setting.USE_TZ
+https://segmentfault.com/q/1010000000405911
+https://blog.csdn.net/qq_27361945/article/details/80580795
+https://blog.csdn.net/w6299702/article/details/38782607
+
+3、staticfiles标签替换
+报错：'staticfiles' is not a registered tag library. Must be one of: admin_list admin_modify admin_urls cache i18n l10n log static tz
+解决：
+{% load staticfiles %}
+{% load static from staticfiles %}
+{% load admin_static %}
+将上述内容替换成：
+{% load static %}
+
+3、django删除app
+注释掉该应用的model.py
+python manage.py migrate 该应用名 zero
+哪里报错就注释掉哪里的代码
+删除settings.py中的install的app名
+备份一下app最好这时，template下该app的文件夹移动到该项目的templates目录下
+最后删除app整个文件夹
+删除templates下该app的文件夹

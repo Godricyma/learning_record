@@ -1,0 +1,25 @@
+Vue的计算属性和侦听应该如何选择？
+
+
+vue安装时，报错：
+npm ERR! typeerror Error: Missing required argument #1
+npm ERR! typeerror     at andLogAndFinish (/usr/share/npm/lib/fetch-package-metadata.js:31:3)
+npm ERR! typeerror     at fetchPackageMetadata (/usr/share/npm/lib/fetch-package-metadata.js:51:22)
+npm ERR! typeerror     at resolveWithNewModule (/usr/share/npm/lib/install/deps.js:456:12)
+npm ERR! typeerror     at /usr/share/npm/lib/install/deps.js:457:7
+npm ERR! typeerror     at /usr/share/npm/node_modules/iferr/index.js:13:50
+npm ERR! typeerror     at /usr/share/npm/lib/fetch-package-metadata.js:37:12
+npm ERR! typeerror     at addRequestedAndFinish (/usr/share/npm/lib/fetch-package-metadata.js:82:5)
+npm ERR! typeerror     at returnAndAddMetadata (/usr/share/npm/lib/fetch-package-metadata.js:117:7)
+npm ERR! typeerror     at pickVersionFromRegistryDocument (/usr/share/npm/lib/fetch-package-metadata.js:134:20)
+npm ERR! typeerror     at /usr/share/npm/node_modules/iferr/index.js:13:50
+npm ERR! typeerror This is an error with npm itself. Please report this error at:
+npm ERR! typeerror     <http://github.com/npm/npm/issues>
+WARN engine @babel/parser@7.12.11: wanted: {"node":">=6.0.0"} (current: {"node":"4.2.6","npm":"3.5.2"})
+
+解决方法：升级node和npm的版本到最新
+1) sudo npm install -g n
+2) sudo n latest
+3) sudo npm install -g npm
+4) hash -d npm
+5) npm i

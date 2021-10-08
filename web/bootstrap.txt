@@ -13,4 +13,13 @@ Reason given for failure:
   {% csrf_token %}
 
 
-2、
+2、使用bootstrap的模板，但是后端获取不到数据
+
+解决方法：
+input里面必须id和name同时存在才能获取到数据
+<label for="inputEmail" class="sr-only">Email address</label>
+  <input type="email" name="inputEmail" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+
+
+3、表单中的action没有以"/"开头并结尾
+You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 192.168.131.131:8080/login/confirm/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.

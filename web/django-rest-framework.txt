@@ -1,0 +1,38 @@
+1、序列化查询结果集的时候报错如下：
+AttributeError: Got AttributeError when attempting to get a value for field `email` on serializer `UserSerializer`.
+The serializer field might be named incorrectly and not match any attribute or key on the `QuerySet` instance.
+Original exception text was: 'QuerySet' object has no attribute 'email'.
+
+需要添加参数many=True，如：
+serializer = UserSerializer(users, many=True)
+
+
+2、使用httpie对API进行测试时，获取不到数据，返回如下：
+HTTP/1.1 301 Moved Permanently
+Content-Length: 0
+Content-Type: text/html; charset=utf-8
+Date: Wed, 06 Jan 2021 06:56:50 GMT
+Location: /dsims/users/
+Referrer-Policy: same-origin
+Server: WSGIServer/0.2 CPython/3.8.6
+Vary: Origin
+X-Content-Type-Options: nosniff
+
+请求的链接后面缺少了一个斜杠，如：
+http http://192.168.131.131:8000/dsims/users/
+
+3、反向关联序列化时，关联对象的主键名称固定，(关联对象名)_set如：
+from rest_framework import serializers
+from apps.patchimport.models import Patch
+from .models import User
+
+class UserSerializer(serializers.ModelSerializer):
+    patch_set = serializers.PrimaryKeyRelatedField(many=True, queryset=Patch.objects.all())
+
+    class Meta:
+        model = User
+        fields = '__all__'
+否则，报错如下：
+AttributeError: 'User' object has no attribute 'patch'
+
+具体参考：https://blog.csdn.net/zzzjin_/article/details/109043527
